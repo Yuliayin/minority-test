@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>测一测你跟哪个少数民族最有缘？</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f0eb;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 1rem;
+      color: #2e2e2e;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.03);
+      overflow: hidden;
+      position: relative;
+      margin: 1rem 0;
+    }
+    .page {
+      padding: 1.8rem 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .hidden {
+      display: none;
+    }
+    .test-page {
+      background: #ffffff;
+      color: #2e3b3b;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #e9e2d8;
+      border-radius: 3px;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #b8a99a;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .question-counter {
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #8b7b6b;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+    }
+    .question-text {
+      font-size: 1.7rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 2rem;
+      color: #3e3a35;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .option-btn {
+      background: #f9f6f2;
+      border: 1.5px solid #e0d7cd;
+      border-radius: 1.2rem;
+      padding: 1rem 1.3rem;
+      font-size: 1.05rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #3e3a35;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .option-btn:hover {
+      background: #f0eae0;
+      border-color: #c0b09a;
+    }
+    .option-btn.selected {
+      background: #e7ddd0;
+      border-color: #a28d74;
+      font-weight: 500;
+    }
+    .option-letter {
+      font-weight: 700;
+      color: #8b7b6b;
+      width: 1.6rem;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2.5rem;
+      gap: 1rem;
+    }
+    .nav-btn {
+      background: transparent;
+      border: 1.5px solid #d9cec0;
+      padding: 0.8rem 1.8rem;
+      border-radius: 2.5rem;
+      font-weight: 600;
+      color: #5a4e3e;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 1rem;
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .nav-btn.primary {
+      background: #b8a99a;
+      border-color: #b8a99a;
+      color: white;
+    }
+    .nav-btn.primary:hover {
+      background: #a28d74;
+    }
+
+    .result-page {
+      color: white;
+      min-height: 100%;
+    }
+    .identity-tag {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin: 1rem 0 0.3rem;
+      line-height: 1.2;
+    }
+    .soul-line {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+    .poster-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .festival-card {
+      background: rgba(255,255,255,0.2);
+      border-radius: 1.2rem;
+      padding: 1.3rem;
+      margin: 1.5rem 0;
+    }
+    .festival-name {
+      font-weight: 700;
+      font-size: 1.4rem;
+    }
+    .festival-date {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin: 0.3rem 0 0.8rem;
+    }
+    .similar-peoples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1.2rem 0;
+    }
+    .similar-chip {
+      background: rgba(255,255,255,0.2);
+      border-radius: 2rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .share-area {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .btn-light {
+      background: white;
+      color: #3e3a35;
+      border: none;
+      padding: 0.9rem 1.5rem;
+      border-radius: 2.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.7);
+      color: white;
+      padding: 0.9rem 1.5rem;
+      border-radius: 2.5rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .compare-page {
+      background: #fefaf5;
+      color: #2e2e2e;
+    }
+    .compare-header {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .match-percent {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+    .compare-row {
+      display: flex;
+      justify-content: space-around;
+      margin: 1.5rem 0;
+    }
+    .compare-person {
+      text-align: center;
+    }
+    .dimension-bar {
+      margin: 0.8rem 0;
+    }
+    .bar-bg {
+      height: 8px;
+      background: #e0d7cd;
+      border-radius: 4px;
+      margin: 0.3rem 0;
+    }
+    .bar-fill {
+      height: 8px;
+      border-radius: 4px;
+      background: #b8a99a;
+    }
+    @media (max-width: 480px) {
+      .question-text {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+  <div id="testPage" class="page test-page">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="question-counter" id="qCounter"></div>
+    <div class="question-text" id="qText"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prevBtn" disabled>← 上一题</button>
+      <button class="nav-btn primary" id="nextBtn">下一题 →</button>
+    </div>
+  </div>
+  <div id="resultPage" class="page result-page hidden"></div>
+  <div id="comparePage" class="page compare-page hidden"></div>
+</div>
+
+<script>
+  (function() {
+    const questions = [
+      { text: "哪种自然气息最让你放松？", options: ["雨后青草和泥土的清香", "湿热雨林的植物气息", "雪后清冷无味的空气", "江风里淡淡的鱼腥味"] },
+      { text: "你更喜欢哪种环境背景音？", options: ["悠远的长调与风声", "林间鸟鸣和溪流声", "法号诵经与经幡飘动声", "多声部合唱与银饰轻碰"] },
+      { text: "哪种气候让你最舒适？", options: ["干燥凉爽，四季分明", "温暖湿润，全年常绿", "高海拔，日照强温差大", "四季如春，温和宜人"] },
+      { text: "一天中你最享受的时刻？", options: ["黎明的草原薄雾", "午后雨林的光斑", "夕阳把雪山染成金色", "深夜江上渔火点点"] },
+      { text: "热闹场合中，你希望如何融入？", options: ["拉手围成圈一起跳舞", "围坐火塘边低声聊天", "你来我往地对歌比拼", "参与一个庄重的仪式环节"] },
+      { text: "陌生人参加节日时，最好的角色是？", options: ["立刻变成朋友一起吃喝", "守规矩就能当临时家人", "欢迎旁观但核心仪式请勿靠近", "动手帮忙就会被接纳"] },
+      { text: "节日里哪种声音最吸引你？", options: ["众人呐喊欢笑的震天声浪", "婉转悠扬的一问一答对歌", "缓慢庄严的集体吟唱", "层层叠叠的器乐与人声交织"] },
+      { text: "哪种景观最能触动你的内心？", options: ["雪山、圣湖和经幡", "倒映天光的千层梯田", "藤蔓缠绕的原始古树", "宽阔江面和陡峭岩壁"] },
+      { text: "你更愿意住在哪种房子里？", options: ["可随时拆搭的毡房", "架在水边的干栏木楼", "石头砌成的坚实碉房", "带火炕的木屋或砖瓦院"] },
+      { text: "大自然的哪种轮廓或线条最打动你？", options: ["草原上蜿蜒的河流曲线", "梯田层层叠叠的几何线条", "雪山冰川的锋利棱角", "峡谷绝壁上江水刻出的痕迹"] },
+      { text: "你向往的日常生活节奏？", options: ["放牧羊群马匹，住可移动的毡房", "春种秋收，与稻田茶园相伴", "狩猎捕鱼，每次出发都是冒险", "放牧牦牛，住石砌的碉房"] },
+      { text: "劳动后哪种休憩场景最让你满足？", options: ["围坐喝奶茶吃手把肉", "梯田边赤脚喝冰糯米酒", "海边木棚下煮鲜鱼汤", "火塘边剥玉米讲迁徙故事"] },
+      { text: "住所附近一定不能缺少什么？", options: ["辽阔的草场和马匹", "清澈的河流或鱼塘", "可采摘的茶园或果林", "一座能眺望远方的雪山"] },
+      { text: "旅途中，你最期待哪顿饭？", options: ["烤肉手抓肉与奶茶", "酸辣凉拌菜与糯米饭", "青稞酒与风干牦牛肉", "清炖江鱼与山野时蔬"] },
+      { text: "哪种色彩的服饰最吸引你？", options: ["红、黑、黄的大胆撞色图腾", "蓝白素雅，繁复银饰点缀", "浓烈红金，配珊瑚蜜蜡", "黑底绣满日月星辰图案"] },
+      { text: "你对节日仪式感的偏好是？", options: ["众人参与的宏大热闹场面", "每一步都有古老含义的礼俗", "以家庭为单位的温馨团聚", "通宵达旦的对歌舞蹈与爱情"] },
+      { text: "你更喜欢哪种材质的饰品？", options: ["闪闪发光的银头饰、项圈", "珊瑚、蜜蜡、绿松石珠串", "皮质、毛毡与金属铆钉", "贝壳、骨头或竹木手工打磨"] },
+      { text: "在陌生民族文化场景中，你希望？", options: ["被热情拉进圈子教跳舞", "先安静观察，等对方邀请", "用小礼物或帮忙自然融入", "即使旁观也能完整感受"] },
+      { text: "旅行中的“缘分”更像什么？", options: ["一场宿醉般的狂欢，醒来像梦", "被祝福的仪式，离开后心里还留着", "火塘边一夜长谈，交换了灵魂", "突然被歌声击中，从此忘不了"] },
+      { text: "你希望如何记录这次缘分之旅？", options: ["与当地人合拍歌舞视频", "写细腻笔记，记下仪式细节", "收集一枚自然信物，如石头或叶子", "买一件当地手作，日后触摸回忆"] }
+    ];
+
+    const optionNationMap = [
+      [["蒙古族","哈萨克族","柯尔克孜族","塔吉克族","裕固族"],["傣族","布朗族","德昂族","基诺族","佤族"],["藏族","门巴族","珞巴族","羌族","普米族"],["赫哲族","京族","鄂伦春族","鄂温克族"]],
+      [["蒙古族","裕固族","达斡尔族","土族"],["独龙族","怒族","傈僳族","普米族"],["藏族","纳西族","羌族","门巴族"],["苗族","侗族","瑶族","畲族"]],
+      [["蒙古族","哈萨克族","柯尔克孜族","达斡尔族","鄂温克族"],["傣族","布朗族","德昂族","基诺族","黎族"],["藏族","门巴族","珞巴族","塔吉克族"],["白族","纳西族","彝族","哈尼族","苗族"]],
+      [["蒙古族","哈萨克族","鄂温克族"],["傣族","佤族","景颇族"],["藏族","羌族","普米族"],["赫哲族","京族","独龙族"]],
+      [["彝族","白族","傈僳族","拉祜族"],["独龙族","怒族","鄂温克族","珞巴族"],["壮族","苗族","布依族","仫佬族"],["藏族","纳西族","蒙古族","土家族"]],
+      [["哈萨克族","柯尔克孜族","维吾尔族","乌孜别克族","回族","东乡族","撒拉族","保安族","塔塔尔族"],["侗族","瑶族","毛南族","水族"],["羌族","门巴族","珞巴族","塔吉克族"],["土家族","哈尼族","仡佬族","基诺族"]],
+      [["彝族","佤族","景颇族","拉祜族"],["壮族","苗族","布依族","仫佬族"],["藏族","纳西族","羌族","门巴族"],["侗族","傈僳族","畲族","瑶族"]],
+      [["藏族","纳西族","普米族","门巴族"],["哈尼族","壮族","瑶族","苗族"],["佤族","景颇族","德昂族","布朗族"],["傈僳族","怒族","独龙族","京族"]],
+      [["蒙古族","哈萨克族","柯尔克孜族","鄂温克族"],["傣族","侗族","壮族","水族"],["藏族","羌族","门巴族"],["满族","锡伯族","达斡尔族","赫哲族"]],
+      [["蒙古族","哈萨克族","达斡尔族"],["哈尼族","壮族","苗族","瑶族"],["藏族","塔吉克族","门巴族"],["傈僳族","怒族","独龙族","羌族"]],
+      [["蒙古族","哈萨克族","柯尔克孜族","塔吉克族"],["壮族","布依族","哈尼族","黎族"],["鄂伦春族","赫哲族","鄂温克族","京族"],["藏族","裕固族","珞巴族","傈僳族"]],
+      [["蒙古族","达斡尔族","土族"],["哈尼族","苗族","仡佬族"],["京族","赫哲族","黎族"],["彝族","拉祜族","佤族","景颇族"]],
+      [["蒙古族","哈萨克族","柯尔克孜族","裕固族"],["赫哲族","京族","水族","傣族"],["布朗族","德昂族","基诺族","哈尼族","畲族"],["藏族","纳西族","普米族","珞巴族"]],
+      [["蒙古族","哈萨克族","柯尔克孜族","塔吉克族","回族","东乡族","撒拉族","保安族"],["傣族","壮族","布依族","仫佬族"],["藏族","门巴族","珞巴族","羌族"],["赫哲族","京族","傈僳族","怒族"]],
+      [["彝族","佤族","景颇族","拉祜族"],["苗族","侗族","白族","水族"],["藏族","土族","裕固族"],["瑶族","畲族","壮族","黎族"]],
+      [["彝族","傣族","景颇族","傈僳族","佤族"],["纳西族","羌族","蒙古族","土家族"],["满族","锡伯族","朝鲜族","俄罗斯族"],["苗族","壮族","布依族","侗族"]],
+      [["苗族","侗族","瑶族","畲族"],["藏族","裕固族","土族"],["蒙古族","哈萨克族","柯尔克孜族"],["黎族","高山族","独龙族","佤族"]],
+      [["傣族","维吾尔族","哈萨克族","黎族"],["藏族","羌族","纳西族","门巴族"],["侗族","水族","毛南族","土家族"],["独龙族","塔吉克族","鄂伦春族","珞巴族"]],
+      [["彝族","佤族","傣族","傈僳族"],["藏族","纳西族","蒙古族","土族"],["鄂温克族","达斡尔族","怒族","独龙族"],["苗族","侗族","壮族","瑶族"]],
+      [["傣族","维吾尔族","黎族","彝族"],["纳西族","羌族","土家族","仡佬族"],["鄂温克族","鄂伦春族","独龙族","珞巴族"],["白族","阿昌族","水族","苗族"]]
+    ];
+
+    const nationProfiles = {
+      "蒙古族":{festival:"那达慕",time:"7-8月（农历五月后）",location:"内蒙古、青海",tags:"草原、长调、豪爽",color:"#2E6B8A"},
+      "回族":{festival:"开斋节",time:"伊斯兰历10月1日（公历3-5月间）",location:"宁夏、甘肃",tags:"清真美食、热情",color:"#3E7A5C"},
+      "藏族":{festival:"雪顿节",time:"藏历六月三十日前后（公历8月）",location:"西藏、四川、青海",tags:"雪山、晒佛、神圣",color:"#8B3A3A"},
+      "维吾尔族":{festival:"古尔邦节",time:"伊斯兰历12月10日（公历6-7月间）",location:"新疆",tags:"歌舞、巴扎、多彩",color:"#C49A3C"},
+      "苗族":{festival:"苗年",time:"农历十月至十一月（公历11-12月）",location:"贵州、湖南",tags:"银饰、刺绣、对歌",color:"#8B4789"},
+      "彝族":{festival:"火把节",time:"农历六月二十四日（公历7-8月）",location:"云南、四川",tags:"火、打跳、热烈",color:"#D2691E"},
+      "壮族":{festival:"三月三",time:"农历三月初三（公历4月）",location:"广西",tags:"歌圩、五色饭",color:"#6B8E23"},
+      "布依族":{festival:"六月六",time:"农历六月初六（公历7月）",location:"贵州",tags:"稻作、蜡染",color:"#5F7A6B"},
+      "朝鲜族":{festival:"秋夕",time:"农历八月十五（公历9-10月）",location:"吉林、辽宁",tags:"秋千、打糕、儒雅",color:"#4A6FA5"},
+      "满族":{festival:"颁金节",time:"农历十月十三（公历11月）",location:"辽宁、河北",tags:"火炕、萨满遗风",color:"#6C5B7B"},
+      "侗族":{festival:"侗年",time:"农历十一月初一（公历12月）",location:"贵州、湖南",tags:"鼓楼、大歌",color:"#4A7C6B"},
+      "瑶族":{festival:"盘王节",time:"农历十月十六（公历11月）",location:"广西、湖南",tags:"长鼓、刺绣",color:"#5E4B3C"},
+      "白族":{festival:"三月街",time:"农历三月十五（公历4-5月）",location:"云南大理",tags:"茶花、三道茶",color:"#B0C4DE"},
+      "土家族":{festival:"赶年",time:"农历腊月二十九（公历1-2月）",location:"湖南、湖北",tags:"摆手舞、哭嫁",color:"#8F6B4C"},
+      "哈尼族":{festival:"苦扎扎",time:"农历六月（公历6-7月）",location:"云南红河",tags:"梯田、长街宴",color:"#6B8E4A"},
+      "哈萨克族":{festival:"纳吾鲁孜节",time:"春分日（公历3月21日）",location:"新疆",tags:"草原、冬不拉",color:"#4A7B8C"},
+      "傣族":{festival:"泼水节",time:"4月13-15日（傣历六月新年）",location:"云南西双版纳",tags:"水、孔雀舞",color:"#2E8B57"},
+      "黎族":{festival:"三月三",time:"农历三月初三（公历4月）",location:"海南",tags:"船形屋、织锦",color:"#B55A30"},
+      "傈僳族":{festival:"阔时节",time:"农历十二月（公历12-1月）",location:"云南怒江",tags:"刀杆、多声部",color:"#4F6D7A"},
+      "佤族":{festival:"木鼓节",time:"4月10-12日左右",location:"云南临沧",tags:"剽牛、黑红图腾",color:"#A0522D"},
+      "畲族":{festival:"三月三",time:"农历三月初三（公历4月）",location:"福建、浙江",tags:"凤凰装、山歌",color:"#5E4B5C"},
+      "高山族":{festival:"丰年祭",time:"7-8月",location:"台湾",tags:"海洋、小米祭",color:"#3F7F7F"},
+      "拉祜族":{festival:"葫芦节",time:"农历十月（公历11月）",location:"云南澜沧",tags:"葫芦笙、慢生活",color:"#6B5B3A"},
+      "水族":{festival:"端节",time:"农历八月（水历年终，公历9-10月）",location:"贵州三都",tags:"水书、马尾绣",color:"#4A6B8A"},
+      "东乡族":{festival:"古尔邦节",time:"伊斯兰历12月10日",location:"甘肃",tags:"花儿、手抓",color:"#8B7D6B"},
+      "纳西族":{festival:"三朵节",time:"农历二月初八（公历3月）",location:"云南丽江",tags:"东巴文、雪山",color:"#5B7B8A"},
+      "景颇族":{festival:"目瑙纵歌",time:"农历正月十五（公历2-3月）",location:"云南德宏",tags:"刀舞、万人齐舞",color:"#8A5B4B"},
+      "柯尔克孜族":{festival:"诺鲁孜节",time:"春分（公历3月21日）",location:"新疆",tags:"史诗《玛纳斯》",color:"#3A6B6B"},
+      "土族":{festival:"纳顿节",time:"农历七月（公历8-9月）",location:"青海",tags:"转山、轮子秋",color:"#C4A35A"},
+      "达斡尔族":{festival:"斡包节",time:"公历6月28日",location:"内蒙古、黑龙江",tags:"曲棍球、萨满",color:"#5A6B4A"},
+      "仫佬族":{festival:"依饭节",time:"立冬后（公历11月）",location:"广西罗城",tags:"舞草龙",color:"#6B8B5A"},
+      "羌族":{festival:"羌历年",time:"农历十月初一（公历10-11月）",location:"四川阿坝",tags:"碉楼、白石崇拜",color:"#8B6B5B"},
+      "布朗族":{festival:"桑康节",time:"4月中旬（傣历新年）",location:"云南西双版纳",tags:"茶山、赕佛",color:"#4B6E4A"},
+      "撒拉族":{festival:"古尔邦节",time:"伊斯兰历12月10日",location:"青海循化",tags:"黄河、篱笆楼",color:"#7B8B5B"},
+      "毛南族":{festival:"分龙节",time:"夏至后（公历6月）",location:"广西环江",tags:"傩面、花竹帽",color:"#5B7A5B"},
+      "仡佬族":{festival:"吃新节",time:"农历七月（公历8-9月）",location:"贵州",tags:"丹砂、傩戏",color:"#9B6B4A"},
+      "锡伯族":{festival:"西迁节",time:"农历四月十八（公历5-6月）",location:"新疆察布查尔",tags:"射箭、大饼",color:"#5B6B8B"},
+      "阿昌族":{festival:"阿露窝罗节",time:"3月20日左右",location:"云南德宏",tags:"户撒刀、对歌",color:"#7B6B5A"},
+      "普米族":{festival:"吾昔节",time:"农历十二月（公历1月）",location:"云南兰坪",tags:"羊皮鼓、森林",color:"#5B7B6B"},
+      "塔吉克族":{festival:"肖公巴哈尔节",time:"春分（公历3月21日）",location:"新疆塔县",tags:"鹰笛、高原",color:"#4B5B7B"},
+      "怒族":{festival:"仙女节",time:"农历三月十五（公历4月）",location:"云南贡山",tags:"鲜花、岩洞祭",color:"#6B5B4B"},
+      "乌孜别克族":{festival:"古尔邦节",time:"伊斯兰历12月10日",location:"新疆",tags:"手鼓、庭院",color:"#5B4B6B"},
+      "俄罗斯族":{festival:"复活节",time:"4月（东正教历）",location:"新疆、内蒙古",tags:"手风琴、列巴",color:"#4B6B8B"},
+      "鄂温克族":{festival:"瑟宾节",time:"6月18日",location:"内蒙古呼伦贝尔",tags:"驯鹿、撮罗子",color:"#3B5B4B"},
+      "德昂族":{festival:"浇花节",time:"4月中旬",location:"云南德宏",tags:"酸茶、银腰带",color:"#4B5B3B"},
+      "保安族":{festival:"古尔邦节",time:"伊斯兰历12月10日",location:"甘肃积石山",tags:"保安腰刀",color:"#6B5B5B"},
+      "裕固族":{festival:"正月大会",time:"农历正月（公历1-2月）",location:"甘肃肃南",tags:"红缨帽、天鹅琴",color:"#8B5B4B"},
+      "京族":{festival:"哈节",time:"农历六月初十或八月初十（公历7月/9月）",location:"广西防城港",tags:"独弦琴、渔猎",color:"#3B6B7B"},
+      "塔塔尔族":{festival:"撒班节",time:"6月20日左右",location:"新疆",tags:"手风琴、蜂蜜酒",color:"#5B4B4B"},
+      "独龙族":{festival:"卡雀哇节",time:"农历腊月（公历1月）",location:"云南贡山",tags:"文面、剽牛祭天",color:"#4B4B5B"},
+      "鄂伦春族":{festival:"篝火节",time:"6月18日",location:"内蒙古、黑龙江",tags:"桦皮船、狩猎",color:"#4B5B4B"},
+      "赫哲族":{festival:"乌日贡节",time:"6月",location:"黑龙江",tags:"伊玛堪、鱼皮衣",color:"#3B4B6B"},
+      "门巴族":{festival:"曲科节",time:"藏历四月（公历5-6月）",location:"西藏墨脱",tags:"木碗、竹编",color:"#5B4B5B"},
+      "珞巴族":{festival:"昂德林节",time:"藏历十二月（公历1-2月）",location:"西藏米林",tags:"弓箭、森林",color:"#4B5B4B"},
+      "基诺族":{festival:"特懋克节",time:"2月6-8日",location:"云南景洪",tags:"太阳鼓、大鼓舞",color:"#6B4B4B"}
+    };
+
+    let currentQuestion = 0;
+    const totalQuestions = 20;
+    let userChoices = new Array(totalQuestions).fill(-1);
+    let inviterChoices = null;
+
+    const testPage = document.getElementById('testPage');
+    const resultPage = document.getElementById('resultPage');
+    const comparePage = document.getElementById('comparePage');
+    const progressFill = document.getElementById('progressFill');
+    const qCounter = document.getElementById('qCounter');
+    const qText = document.getElementById('qText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function parseInviterFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      if (ref) {
+        try {
+          const decoded = atob(ref);
+          const arr = JSON.parse(decoded);
+          if (Array.isArray(arr) && arr.length === totalQuestions) return arr;
+        } catch (e) {}
+      }
+      return null;
+    }
+
+    function encodeChoices(choices) {
+      return btoa(JSON.stringify(choices));
+    }
+
+    function getTopNation(choices) {
+      const score = {};
+      choices.forEach((optIdx, qIdx) => {
+        if (optIdx === -1) return;
+        const nations = optionNationMap[qIdx][optIdx];
+        nations.forEach(n => { score[n] = (score[n] || 0) + 1; });
+      });
+      let maxScore = -1, topNation = null;
+      for (let [nation, s] of Object.entries(score)) {
+        if (s > maxScore || (s === maxScore && nation < topNation)) {
+          maxScore = s; topNation = nation;
+        }
+      }
+      return topNation || "蒙古族";
+    }
+
+    function getIdentityTag(choices) {
+      const envCount = {A:0,B:0,C:0,D:0}, landCount = {A:0,B:0,C:0,D:0};
+      for(let i=0;i<4;i++) if(choices[i]>=0) envCount[String.fromCharCode(65+choices[i])]++;
+      for(let i=7;i<10;i++) if(choices[i]>=0) landCount[String.fromCharCode(65+choices[i])]++;
+      const maxEnv = Object.keys(envCount).reduce((a,b)=>envCount[a]>=envCount[b]?a:b);
+      const maxLand = Object.keys(landCount).reduce((a,b)=>landCount[a]>=landCount[b]?a:b);
+      const envWords = {A:"追风的",B:"听雨的",C:"踏雪的",D:"逐浪的"};
+      const landWords = {A:"远行者",B:"守望者",C:"守林人",D:"探险家"};  // 将“转山者”改为“远行者”
+      return (envWords[maxEnv]||"") + (landWords[maxLand]||"行者");
+    }
+
+    function getCompareScene(meNation, partnerNation, meTag, partnerTag) {
+      if (meNation === partnerNation) return `两个${meNation}灵魂相遇，默契得不需要言语。`;
+      const scenes = [
+        `一个向往${meNation}的${meTag}，一个心属${partnerNation}的${partnerTag}，旅途注定充满惊喜与碰撞。`,
+        `${meTag}与${partnerTag}的搭配，要么互相嫌弃，要么互补得刚刚好。`
+      ];
+      return scenes[Math.floor(Math.random()*scenes.length)];
+    }
+
+    function getSimilarNations(mainNation) {
+      const all = Object.keys(nationProfiles);
+      const mainTags = nationProfiles[mainNation]?.tags || "";
+      return all.filter(n=>n!==mainNation).sort((a,b)=>{
+        const aMatch = (nationProfiles[a]?.tags||"").split("、").filter(t=>mainTags.includes(t)).length;
+        const bMatch = (nationProfiles[b]?.tags||"").split("、").filter(t=>mainTags.includes(t)).length;
+        return bMatch - aMatch;
+      }).slice(0,4);
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      qCounter.textContent = `第 ${currentQuestion+1} / ${totalQuestions} 题`;
+      qText.textContent = q.text;
+      progressFill.style.width = ((currentQuestion+1)/totalQuestions*100)+"%";
+      optionsContainer.innerHTML = "";
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn' + (userChoices[currentQuestion] === idx ? ' selected' : '');
+        btn.innerHTML = `<span class="option-letter">${String.fromCharCode(65+idx)}</span>${opt}`;
+        btn.addEventListener('click', ()=> {
+          userChoices[currentQuestion] = idx;
+          renderQuestion();
+        });
+        optionsContainer.appendChild(btn);
+      });
+      prevBtn.disabled = currentQuestion === 0;
+      nextBtn.disabled = userChoices[currentQuestion] === -1;
+      nextBtn.textContent = currentQuestion === totalQuestions-1 ? '查看结果 →' : '下一题 →';
+    }
+
+    function goNext() {
+      if (userChoices[currentQuestion] === -1) return;
+      if (currentQuestion < totalQuestions-1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        if (inviterChoices) {
+          showComparePage(userChoices, inviterChoices);
+        } else {
+          showResult();
+        }
+      }
+    }
+
+    function goPrev() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      const topNation = getTopNation(userChoices);
+      const profile = nationProfiles[topNation] || nationProfiles["蒙古族"];
+      const tag = getIdentityTag(userChoices);
+      const similar = getSimilarNations(topNation);
+      const mainColor = profile.color || "#8B3A3A";
+
+      testPage.classList.add('hidden');
+      resultPage.classList.remove('hidden');
+      comparePage.classList.add('hidden');
+      resultPage.style.backgroundColor = mainColor;
+      resultPage.style.color = 'white';
+
+      const similarHTML = similar.map(n=>{
+        const p = nationProfiles[n];
+        return `<span class="similar-chip">${n} · ${p.festival} ${p.time}</span>`;
+      }).join('');
+
+      resultPage.innerHTML = `
+        <div style="padding:0.5rem 0;">
+          <div style="font-size:1rem; opacity:0.8;">你的灵魂住着一座${profile.tags.split("、")[0]}的远方</div>
+          <div class="identity-tag">${topNation}</div>
+          <div style="font-size:1.4rem; font-weight:500; margin-bottom:0.5rem;">${tag}</div>
+          <div class="soul-line">“${profile.tags}，这便是你与${topNation}的缘分。”</div>
+        </div>
+        <div class="poster-card">
+          <div style="font-weight:500; font-size:1.2rem;">${profile.tags.replace(/、/g,' · ')}</div>
+        </div>
+        <div class="festival-card">
+          <div class="festival-name">${profile.festival}</div>
+          <div class="festival-date">📅 ${profile.time}</div>
+          <div>📍 ${profile.location}</div>
+          <div style="margin-top:0.8rem; font-size:0.9rem;">✨ 建议提前规划，沉浸式体验当地文化。</div>
+        </div>
+        <div style="font-weight:600; margin-top:1rem;">你还会喜欢这些地方</div>
+        <div class="similar-peoples">${similarHTML}</div>
+        <div class="share-area">
+          <button class="btn-light" id="shareResultBtn">📤 生成我的缘分海报（截图分享）</button>
+          <button class="btn-outline" id="inviteCompareBtn">👥 邀请朋友测契合度</button>
+        </div>
+        <div style="margin-top:1rem; font-size:0.8rem; opacity:0.7; text-align:center;">点击邀请，复制链接发给朋友，测测你们适不适合一起旅行</div>
+      `;
+
+      document.getElementById('shareResultBtn').addEventListener('click', ()=>{
+        alert('请截图当前页面分享至朋友圈！');
+      });
+      document.getElementById('inviteCompareBtn').addEventListener('click', ()=>{
+        const encoded = encodeChoices(userChoices);
+        const shareUrl = `${window.location.origin}${window.location.pathname}?ref=${encoded}`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareUrl).then(()=> alert('链接已复制！发给朋友，TA完成测试后即可看到契合度。'));
+        } else {
+          prompt('复制此链接发给朋友：', shareUrl);
+        }
+      });
+    }
+
+    function showComparePage(myChoices, partnerChoices) {
+      const myNation = getTopNation(myChoices);
+      const partnerNation = getTopNation(partnerChoices);
+      const myTag = getIdentityTag(myChoices);
+      const partnerTag = getIdentityTag(partnerChoices);
+      const sameCount = myChoices.reduce((acc, val, idx) => acc + (val === partnerChoices[idx] ? 1 : 0), 0);
+      const matchPercent = Math.round((sameCount / totalQuestions) * 100);
+      let titleEmoji = '🌋', titleText = '小心火山爆发';
+      if (matchPercent >= 80) { titleEmoji = '🎉'; titleText = '命中注定的旅行搭子！'; }
+      else if (matchPercent >= 50) { titleEmoji = '⚖️'; titleText = '可以一起出发，但需要一点磨合'; }
+      else if (matchPercent >= 30) { titleEmoji = '🌋'; titleText = '一起旅游？小心火山爆发！'; }
+      else { titleEmoji = '🆘'; titleText = '建议分开旅行，友谊更长久'; }
+
+      const sceneText = getCompareScene(myNation, partnerNation, myTag, partnerTag);
+
+      testPage.classList.add('hidden');
+      resultPage.classList.add('hidden');
+      comparePage.classList.remove('hidden');
+      comparePage.innerHTML = `
+        <div class="compare-header">${titleEmoji} ${titleText}</div>
+        <div class="match-percent" style="text-align:center;">${matchPercent}% <span style="font-size:1rem;">契合度</span></div>
+        <div class="compare-row">
+          <div class="compare-person"><strong>${myTag}</strong><br>${myNation}</div>
+          <div style="font-size:2rem;">⚡</div>
+          <div class="compare-person"><strong>${partnerTag}</strong><br>${partnerNation}</div>
+        </div>
+        <div style="background:#f0eae0; border-radius:1rem; padding:1rem; margin:1rem 0;">
+          <div class="dimension-bar"><span>环境偏好</span><div class="bar-bg"><div class="bar-fill" style="width:${matchPercent}%"></div></div></div>
+          <div class="dimension-bar"><span>社交方式</span><div class="bar-bg"><div class="bar-fill" style="width:${matchPercent}%"></div></div></div>
+          <div class="dimension-bar"><span>景观触动</span><div class="bar-bg"><div class="bar-fill" style="width:${matchPercent}%"></div></div></div>
+          <div class="dimension-bar"><span>美食期待</span><div class="bar-bg"><div class="bar-fill" style="width:${matchPercent}%"></div></div></div>
+        </div>
+        <div style="font-style:italic; background:rgba(0,0,0,0.03); padding:1rem; border-radius:1rem;">🎬 ${sceneText}</div>
+        <button class="btn-light" style="margin-top:1.5rem; width:100%;" id="inviteAnotherBtn">👥 再拉一个朋友，三人成行</button>
+      `;
+      document.getElementById('inviteAnotherBtn').addEventListener('click', ()=>{
+        const encoded = encodeChoices(myChoices);
+        const shareUrl = `${window.location.origin}${window.location.pathname}?ref=${encoded}`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareUrl).then(()=> alert('链接已复制！发给新朋友继续对比。'));
+        } else {
+          prompt('复制链接：', shareUrl);
+        }
+      });
+    }
+
+    function init() {
+      inviterChoices = parseInviterFromURL();
+      renderQuestion();
+      prevBtn.addEventListener('click', goPrev);
+      nextBtn.addEventListener('click', goNext);
+    }
+
+    init();
+  })();
+</script>
+</body>
+</html>
